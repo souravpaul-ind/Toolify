@@ -100,3 +100,14 @@ toolify
 ```
 
 If the installation is successful, the Toolify menu will appear.
+
+
+# Uninstallation
+
+To completely remove Toolify from Termux:
+
+```bash
+cd Toolify
+chmod +x uninstall.sh
+./uninstall.sh
+```
