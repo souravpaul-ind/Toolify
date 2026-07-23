@@ -1,0 +1,183 @@
+#!/data/data/com.termux/files/usr/bin/bash
+
+clear
+
+GREEN="\e[32m"
+RED="\e[31m"
+BLUE="\e[34m"
+CYAN="\e[36m"
+YELLOW="\e[33m"
+RESET="\e[0m"
+
+clear
+
+echo -e "\e[32m"
+cat << "EOF"
+
+████████╗ ██████╗  ██████╗ ██╗     ██╗███████╗██╗   ██╗
+╚══██╔══╝██╔═══██╗██╔═══██╗██║     ██║██╔════╝╚██╗ ██╔╝
+   ██║   ██║   ██║██║   ██║██║     ██║█████╗   ╚████╔╝
+   ██║   ██║   ██║██║   ██║██║     ██║██╔══╝    ╚██╔╝
+   ██║   ╚██████╔╝╚██████╔╝███████╗██║██║        ██║
+   ╚═╝    ╚═════╝  ╚═════╝ ╚══════╝╚═╝╚═╝        ╚═╝
+
+EOF
+echo -e "\e[0m"
+
+echo -e "\e[32mVersion : 1.0.0"
+echo "Author  : Sourav Paul"
+echo "Platform: Termux"
+echo "-----------------------------------------------------------"
+echo "Toolify is a lightweight package manager for your custom"
+echo "tools. It installs, updates, lists and removes tools using"
+echo "this Tool."
+echo "-----------------------------------------------------------"
+echo
+echo -e "\e[32m"
+
+echo -e "${GREEN}[1]${RESET} Install Tool"
+echo -e "${GREEN}[2]${RESET} Uninstall Tool"
+echo -e "${GREEN}[3]${RESET} List Installed Tools"
+echo -e "${GREEN}[4]${RESET} Tool Information"
+echo -e "${GREEN}[0]${RESET} Exit"
+echo
+
+read -p "Select Option [0-4]: " OPTION
+
+case "$OPTION" in
+
+1)
+##################################################
+# INSTALL
+##################################################
+
+echo
+echo -e "${BLUE}=== Install Tool ===${RESET}"
+
+read -p "Command Name : " NAME
+read -p "Folder Name (inside HOME): " FOLDER
+read -p "Main File Name : " MAIN
+
+FOLDER="${FOLDER#/}"
+FOLDER="$HOME/$FOLDER"
+
+MAINFILE="${MAIN##*/}"
+MAINPATH="$FOLDER/$MAINFILE"
+
+if command -v "$NAME" >/dev/null 2>&1; then
+    echo -e "${RED}Command already exists.${RESET}"
+    exit 1
+fi
+
+if [ -e "$PREFIX/bin/$NAME" ] || [ -d "$PREFIX/share/$NAME" ]; then
+    echo -e "${RED}Already installed.${RESET}"
+    exit 1
+fi
+
+if [ ! -d "$FOLDER" ]; then
+    echo -e "${RED}Folder not found.${RESET}"
+    exit 1
+fi
+
+if [ ! -f "$MAINPATH" ]; then
+    echo -e "${RED}Main file not found.${RESET}"
+    exit 1
+fi
+
+cp -r "$FOLDER" "$PREFIX/share/$NAME"
+
+cat > "$PREFIX/bin/$NAME" <<EOF
+#!/data/data/com.termux/files/usr/bin/bash
+cd "$PREFIX/share/$NAME"
+exec "./$MAINFILE" "\$@"
+EOF
+
+chmod +x "$PREFIX/bin/$NAME"
+
+echo "$MAINFILE" > "$PREFIX/share/$NAME/.main"
+
+echo
+echo -e "${GREEN}Installed Successfully.${RESET}"
+;;
+
+2)
+##################################################
+# UNINSTALL
+##################################################
+
+echo
+echo -e "${BLUE}=== Uninstall Tool ===${RESET}"
+
+read -p "Tool Name : " NAME
+
+if [ ! -d "$PREFIX/share/$NAME" ]; then
+    echo -e "${RED}Tool not installed.${RESET}"
+    exit
+fi
+
+read -p "Delete '$NAME' ? (y/N): " ANS
+
+case "$ANS" in
+y|Y)
+rm -f "$PREFIX/bin/$NAME"
+rm -rf "$PREFIX/share/$NAME"
+echo -e "${GREEN}Removed Successfully.${RESET}"
+;;
+*)
+echo "Cancelled."
+;;
+esac
+;;
+
+3)
+##################################################
+# LIST
+##################################################
+
+echo
+echo -e "${BLUE}Installed Tools${RESET}"
+echo "--------------------------"
+
+COUNT=0
+
+for i in "$PREFIX/share"/*; do
+    [ -d "$i" ] || continue
+    COUNT=$((COUNT+1))
+    echo "$COUNT. $(basename "$i")"
+done
+
+echo
+echo "Total : $COUNT"
+;;
+
+4)
+##################################################
+# INFO
+##################################################
+
+echo
+echo -e "${BLUE}Tool Information${RESET}"
+
+read -p "Tool Name : " NAME
+
+if [ ! -d "$PREFIX/share/$NAME" ]; then
+    echo -e "${RED}Tool not installed.${RESET}"
+    exit
+fi
+
+echo
+echo "Name       : $NAME"
+echo "Location   : $PREFIX/share/$NAME"
+echo "Executable : $(cat "$PREFIX/share/$NAME/.main")"
+;;
+
+0)
+echo "Goodbye!"
+exit
+;;
+
+*)
+echo -e "${RED}Invalid Option.${RESET}"
+;;
+
+esac
