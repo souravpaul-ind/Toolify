@@ -66,7 +66,7 @@ pkg update && pkg upgrade -y
 2. Install Git.
 
 ```bash
-pkg install git
+pkg install git -y
 ```
 
 3. Clone the repository.
@@ -78,7 +78,7 @@ git clone https://github.com/souravpaul-ind/Toolify.git
 4. Navigate to the project directory.
 
 ```bash
-cd toolify
+cd Toolify
 ```
 
 5. Make the installer executable.
