@@ -115,3 +115,8 @@ cd Toolify
 chmod +x uninstall.sh
 ./uninstall.sh
 ```
+
+## 📄 License
+
+This project is licensed under the **MIT License**. 
+See the [LICENSE](LICENSE) file for more details.
