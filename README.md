@@ -11,6 +11,8 @@
 
 # 🚀 Toolify
 
+![Toolify Banner](image-2.jpg)
+
 **A lightweight package manager for Termux**
 
 Install, manage and launch your custom tools from anywhere with a single command.
