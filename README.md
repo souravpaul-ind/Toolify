@@ -11,7 +11,7 @@
 
 # 🚀 Toolify
 
-![Toolify Banner](image-2.jpg)
+![Toolify Review](image-1.jpg)
 
 **A lightweight package manager for Termux**
 
